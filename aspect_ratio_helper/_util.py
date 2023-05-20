@@ -1,17 +1,16 @@
+from typing import Dict, Any, Union
 import contextlib
 
 import aspect_ratio_helper._constants as _const
 
 
-def safe_opt_util(shared_opts, key, default_key_map: dict[str, object]):
-    # attempt to retrieve key from shared options
+def safe_opt_util(shared_opts: Union[Dict[str, Any], None], key: str, default_key_map: Dict[str, object]):
     with contextlib.suppress(AttributeError):
-        value = shared_opts.__getattr__(key)
+        value = getattr(shared_opts, key, None)
         if value is not None:
             return value
 
-    # attempt to retrieve default, and last resort the constant default
-    return shared_opts.get_default(key) or default_key_map.get(key)
+    return shared_opts.get(key, default_key_map.get(key))
 
 
 def display_multiplication(num) -> str:
